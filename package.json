@@ -1,0 +1,39 @@
+{
+  "name": "responsive-interactive-highcharts-dashboard",
+  "version": "0.1.0",
+  "author": "Vijay Ayilavarapu",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "highcharts": "^7.0.1",
+    "highcharts-react-official": "^2.0.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-scripts": "3.0.1",
+    "react-to-print": "2.2.1",
+    "reactjs-file-uploader": "^1.0.8"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "keywords": [
+    "dashboard",
+    "highcharts",
+    "react",
+    "dataviz",
+    "reactjs"
+  ],
+  "description": "Responsive interactive anayltics dashboard using HigCharts"
+}
