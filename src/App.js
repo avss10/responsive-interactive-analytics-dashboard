@@ -4,15 +4,78 @@ import "./App.css";
 import template from "./components/template";
 import Selection from "./components/Selection";
 import Dashboard from "./components/Dashboard.jsx";
+import { chartDataSet1, chartDataSet3, chartDataSet4, chartDataSet2 } from "./data-source/data";
 import dataProcessing, {
   procesedDataSet1,
   procesedDataSet2,
   procesedDataSet3,
   procesedDataSet4
 } from "./components/dataProcessing";
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class App extends Component {
+
   state = template;
+
+  constructor(props) {
+    super(props);
+      this.fileVarible = {
+        selectedFile: null,
+        loaded:0
+    }
+ }
+
+ onChangeHandler=event=>{
+    // this.setState({
+    //   selectedFile: event.target.files[0],
+    //   loaded: 0,
+    // })
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+      var preview = document.getElementById('show-text');
+      var file = document.querySelector('input[type=file]').files[0];
+      var reader = new FileReader()
+
+      var textFile = /javascript.*/;
+
+      if (file.type.match(textFile)) {
+         reader.onload = function (event) {
+           preview.innerHTML = event.target.result;
+           let { chartDataSet1, chartDataSet3, chartDataSet4, chartDataSet2 } = event.target.result;
+           console.log(chartDataSet2);
+         }
+      } else {
+         preview.innerHTML = "<span class='error'>It doesn't seem to be a text file!</span>";
+      }
+      reader.readAsText(file);
+
+    } else {
+      alert("Your browser is too old to support HTML5 File API");
+    }
+  }
+
+  onClickHandler = () => {
+
+    const data = new FormData()
+    
+    data.append('file', this.fileVarible.selectedFile)
+    axios.post("http://localhost:8000/upload", data, {
+      onUploadProgress: ProgressEvent => {
+        this.setState({
+          loaded: (ProgressEvent.loaded / ProgressEvent.total*100),
+        })
+      },
+     })
+    .then(res => { 
+      console.log(res)
+      console.log(res.statusText)
+      toast.success('Upload success')
+    })
+    .catch(err => { 
+      toast.error('Upload fail')
+    })
+  }
 
   copyDataSeries = (obj = {}) => {
     this.setState({
@@ -26,27 +89,34 @@ class App extends Component {
       ]
     });
   };
+
   componentDidMount() {
-    dataProcessing(this.state.yearFrom, this.state.yearTo, this.state.msg);
+
+    dataProcessing(this.state.filterValue1, this.state.filterValue2, chartDataSet1, chartDataSet2, chartDataSet3, chartDataSet4);
     this.copyDataSeries();
   }
 
   handleSubmit = e => {
-    let msg = dataProcessing(this.state.yearFrom, this.state.yearTo);
+    let msg = dataProcessing(this.state.filterValue1, this.state.filterValue2, chartDataSet1, chartDataSet2, chartDataSet3, chartDataSet4);
     this.copyDataSeries({ msg: msg });
     e.preventDefault();
   };
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.yearFrom !== this.state.yearFrom) {
+    if (prevState.filterValue1 !== this.state.filterValue1) {
       this.handleChangeSelect();
     }
-    if (prevState.yearTo !== this.state.yearTo) {
+    if (prevState.filterValue2 !== this.state.filterValue2) {
+      this.handleChangeSelect();
+    }
+    if(this.files){
+      
       this.handleChangeSelect();
     }
   }
+
   handleChangeSelect() {
-    let msg = dataProcessing(this.state.yearFrom, this.state.yearTo);
+    let msg = dataProcessing(this.state.filterValue1, this.state.filterValue2, chartDataSet1, chartDataSet2, chartDataSet3, chartDataSet4);
     this.copyDataSeries({ msg: msg });
   }
 
@@ -55,9 +125,13 @@ class App extends Component {
       [e.target.name]: e.target.value
     });
   };
+
   render() {
     return (
       <>
+        <div className="form-group">
+          <ToastContainer />
+        </div>
         <div className="container  mb-5 pb-3 bg-light">
           <div
             className={
@@ -68,8 +142,8 @@ class App extends Component {
           <strong>{this.state.msg}</strong>
           </div>
           <Selection
-            yearFrom={this.state.yearFrom}
-            yearTo={this.state.yearTo}
+            filterValue1={this.state.filterValue1}
+            filterValue2={this.state.filterValue2}
             onChangeYear={this.handleChangeYear}
             onSubmit={this.handleSubmit}
           />
@@ -85,19 +159,41 @@ class App extends Component {
 
 class ParentApp extends App {
 
-  render() {
+    render() {
     return (
-      <div>
+      <div className="container">
         <div className="container bg-light">
-          <h2 className="text-center text-bold mt-5">
+          <h2 className="container text-center text-bold mt-5">
             Response Interactive Analytics Dashboard
           </h2>
         </div>
-        <div class = "container mb-5 pb-3 bg-light">
-          <ReactToPrint
-            trigger={() => <button class = "float-right align-center" href="#">Print this out!</button>}
-            content={() => this.componentRef}
-          />
+        <div className="mt-1 pb-2 bg-light">
+          <div align ="center">
+            <label>Import report (.js)</label>
+          </div>
+          <div align ="center">
+            <input type="file" name="file" onChange={this.onChangeHandler}/>
+            <button type="button" className="btn btn-success" onClick={this.onClickHandler}>Upload</button>
+            <div id="show-text">Choose text File</div>
+          </div>
+        </div>
+        <div className="mt-1 pb-2 bg-light">
+          <div align ="center">
+            <label>Export report</label>
+          </div>
+          <div align ="center">
+            <ReactToPrint trigger={() => <button href="#">Export report (.js)</button>} content={() => this.componentRef}/>
+          </div>
+        </div>
+        <div className="mt-1 pb-2 bg-light">
+          <div align ="center">
+            <label>Print report</label>
+          </div>
+          <div align ="center">
+            <ReactToPrint trigger={() => <button href="#">Print pdf</button>} content={() => this.componentRef}/>
+          </div>
+        </div>
+        <div className = "container mt-2 pb-3 bg-light">
           <App ref={el => (this.componentRef = el)} />
         </div>
       </div>

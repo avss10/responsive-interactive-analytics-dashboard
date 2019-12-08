@@ -4,14 +4,26 @@
   "author": "Vijay Ayilavarapu",
   "private": true,
   "dependencies": {
+    "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "filepond": "^4.7.2",
+    "filepond-plugin-image-exif-orientation": "1.0.4",
+    "filepond-plugin-image-preview": "4.0.3",
     "highcharts": "^7.0.1",
     "highcharts-react-official": "^2.0.0",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.1",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
+    "react-file-reader": "^1.1.4",
+    "react-filepond": "^7.0.1",
     "react-scripts": "3.0.1",
     "react-to-print": "2.2.1",
-    "reactjs-file-uploader": "^1.0.8"
+    "react-toastify": "^5.4.1",
+    "reactstrap": "^8.1.1",
+    "yarn": "^1.19.2"
   },
   "scripts": {
     "start": "react-scripts start",

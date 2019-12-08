@@ -1,54 +1,36 @@
 import React from "react";
-import { chartDataSet1, chartDataSet3, chartDataSet4, chartDataSet2 } from "./../examples/data";
+
 let procesedDataSet1 = [],
 procesedDataSet2 = [],
 procesedDataSet3 = [],
 procesedDataSet4 = [];
 
-let dataProcessing = (yearFrom, yearTo) => {
+let dataProcessing = (filterValue1, filterValue2, chartDataSet1, chartDataSet3, chartDataSet4, chartDataSet2) => {
   let msg;
-  if (yearFrom <= yearTo) {
+  if (filterValue1 <= filterValue2) {
     
-    procesedDataSet1 = process(yearFrom, yearTo, 1);
-    procesedDataSet2 = process(yearFrom, yearTo, 2);
-    procesedDataSet3 = process(yearFrom, yearTo, 3);
-    procesedDataSet4 = process(yearFrom, yearTo, 4);
+    procesedDataSet1 = process(filterValue1, filterValue2, chartDataSet1);
+    procesedDataSet2 = process(filterValue1, filterValue2, chartDataSet2);
+    procesedDataSet3 = process(filterValue1, filterValue2, chartDataSet3);
+    procesedDataSet4 = process(filterValue1, filterValue2, chartDataSet4);
 
     msg = "Select the date range";
   } else {
     msg = (
       <>
-        Year <b>From</b> should be less or equal to year <b>To</b>
+        First filter value <b>From</b> should be less or equal to second filter value <b>To</b>
       </>
     );
   }
   return msg;
 };
 
-function process(yearFrom, yearTo, dataSetNumber){
-
-  var dataSetCollection;
-
-  switch(dataSetNumber){
-    case 1:
-      dataSetCollection = chartDataSet1;
-      break;
-    case 2: 
-      dataSetCollection = chartDataSet2;
-      break;
-    case 3:
-       dataSetCollection = chartDataSet3;
-       break;
-    case 4: 
-       dataSetCollection = chartDataSet4;
-       break;
-    default:
-      dataSetCollection = new Map();
-      break;
-  }
+function process(filterValue1, filterValue2, dataSetCollection){
 
   var arr = {};
   
+  console.log(dataSetCollection);
+
   Object.keys(dataSetCollection).forEach(function(key, valueIndex) {
     
     var count =  0;
@@ -59,9 +41,9 @@ function process(yearFrom, yearTo, dataSetNumber){
 
       arr[arrayKey] = arr[arrayKey] || [];
     
-      for(let yearIndex = yearFrom; yearIndex - 1 < yearTo; yearIndex++){                  
+      for(let filterIndex = filterValue1; filterIndex - 1 < filterValue2; filterIndex++){                  
     
-        count += parseInt(dataSetCollection[key][valueIndex]['chartDataArray'][collectionIndex].yearData[yearIndex]);
+        count += parseInt(dataSetCollection[key][valueIndex]['chartDataArray'][collectionIndex].data[filterIndex]);
       }
      
       arr[arrayKey].push({name : dataSetCollection[key][valueIndex]['chartDataArray'][collectionIndex].name,  y: count, chartType:key });

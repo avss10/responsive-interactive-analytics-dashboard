@@ -7,3 +7,28 @@
   border: solid 1px #6c757d;
   padding: 10px;
 }
+
+td {
+  height:"10px";
+  text-align: justify; 
+  vertical-align: center;
+  padding: 5px 100px 5px 5px;
+}
+
+label {
+  padding: 10px;
+  vertical-align: "center";
+}
+
+#App{
+  height:100%; 
+  width:100%; 
+  background-color:gray;
+  position:relative;
+}
+
+/* #show-text{
+  visibility: hidden;
+  width: 0px;
+  display: table;
+} */
